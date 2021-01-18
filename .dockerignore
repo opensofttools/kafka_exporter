@@ -1,5 +1,7 @@
-.*
+.git
+.travis.yml
+.idea
+.gitignore
 vendor
 Dockerfile
-Makefile
 README.md
