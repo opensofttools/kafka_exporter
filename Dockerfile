@@ -1,18 +1,15 @@
 FROM        golang:1.15.0 as gobuild
 MAINTAINER  kirin13 <kirin13@163.com>
 
-RUN mkdir /tools
-WORKDIR /tools
-COPY go.mod .
-COPY go.sum .
-RUN go mod download
+RUN mkdir /kafka_exporter
+WORKDIR /kafka_exporter
 COPY . .
-RUN make
+RUN make build
 
 FROM alpine:3.12
 MAINTAINER kirin13 <kirin13@163.com>
 WORKDIR /
-COPY --from=gobuild /tools/kafka_exporter /
+COPY --from=gobuild /kafka_exporter/kafka_exporter /usr/local/bin/
 RUN apk update \
     && apk upgrade \
     && apk add --no-cache \
@@ -20,4 +17,4 @@ RUN apk update \
     && update-ca-certificates 2>/dev/null || true
 
 EXPOSE     9308
-ENTRYPOINT ["/kafka_exporter"]
+ENTRYPOINT ["/usr/local/bin/kafka_exporter"]
